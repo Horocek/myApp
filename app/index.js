@@ -19,7 +19,7 @@ console.log(`The result is: ${result}`)
 
 //вывод в браузер
 app.get('/', (req, res) => {
-    res.send('<h1>Hello World!</h1> ' + result);
+    res.send(`<h1>Hello World!</h1> ${result}`);
     
 });
 
