@@ -1,7 +1,8 @@
 // app/calc.js
-const sum = arr => {
-    return arr.reduce(function(a, b) {
-        return a + b
-    }, 0)
+const sum = pathStr => {
+    let array = [];
+    pathStr = pathStr.substr(1).replace(/&/g,'');
+    array = pathStr.split('num=');
+    return array.reduce((acc, item) => +acc + +item);
 }
 module.exports.sum = sum

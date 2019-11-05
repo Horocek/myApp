@@ -3,24 +3,14 @@ const express  = require('express');
 const app  = express();
 
 
-//массив данных
-const numbersToAdd = [
-    1,
-    4,
-    10,
-    2
-]
-
-
-
-const result = calc.sum(numbersToAdd) //вызов фунции sum из модуля calc
-console.log(`The result is: ${result}`)
-
-
 //вывод в браузер
 app.get('/', (req, res) => {
     res.send('<h1>Hello World!</h1> ' + result);
-    
+});
+
+app.get('/num=*&num=*', (req, res) => {
+    const result = calc.sum(req.path); //вызов фунции sum из модуля calc
+    res.send(`<h1>sum = ${result}</h1>`);
 });
 
 
