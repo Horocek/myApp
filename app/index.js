@@ -5,7 +5,7 @@ const app  = express();
 
 //вывод в браузер
 app.get('/', (req, res) => {
-    res.send('<h1>Hello World!</h1> ' + result);
+    res.send('<h1>Hello World!</h1>');
 });
 
 app.get('/num=*&num=*', (req, res) => {
