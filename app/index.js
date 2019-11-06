@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
 
 app.get('/num=*&num=*', (req, res) => {
     const result = calc.sum(req.path); //вызов фунции sum из модуля calc
-    res.send(`<h1>sum = ${result}</h1>`);
+    res.send(`<h1>вычисление суммы -> ${result}</h1>`);
 });
 
 
