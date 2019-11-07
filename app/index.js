@@ -6,16 +6,6 @@ const app  = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-let users = [
-    {
-    name : 'Haro',
-    pass : '12345678'},
-    {
-    name : 'Kum',
-    pass : 'kum'}
-]
-
-
 app.get('/num=*&num=*', (req, res) => {
     const result = calc.sum(req.path); 
     res.send(`<h1>вычисление суммы -> ${result}</h1>`);
@@ -31,15 +21,13 @@ app.post('/sum', (req, res) => {
 
 //Post /registration регистрация  
 app.post('/registration', (req, res) => {
-    users.push({
-        name : req.body.userName,
-        pass : req.body.userPass,});
-    res.send('Регистрация успешна');
+    result = userFunction.Creat(req.body.userName, req.body.userPass) == false ? `Пользователь ${req.body.userName} сущевствует` : 'Регистрация успешна'
+    res.send(result);
 });
 
 //Post /login авторизация   
 app.post('/login', (req, res) => {
-    const result = userFunction.isTrueUser(req.body.userName, req.body.userPass, users);
+    const result = userFunction.isTrueUser(req.body.userName, req.body.userPass);
     res.send(`авторизация ${result}`);
 });
 
