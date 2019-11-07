@@ -1,11 +1,7 @@
 // app/calc.js
 const sum = pathStr => {
-    let array = [];
-    pathStr = pathStr.substr(1).replace(/&/g,'');
-    array = pathStr.split('num=');
-    return array.reduce((acc, item) => {
-        if (!Number.isInteger(+item)) return "Ошибка: не верные данные";
-        return +item + +acc;
-    });
+    const normalPath = pathStr.substr(1).replace(/&/g,''); //парс урл адреса
+    const array = normalPath.split('num='); //сбор массива чисел
+    return array.reduce((acc, item) => !Number.isInteger(+item) ? "Ошибка: не верные данные" : (+item + +acc)); //вычисление суммы
 }
 module.exports.sum = sum

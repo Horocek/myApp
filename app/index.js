@@ -1,8 +1,10 @@
 const calc = require('./calc')
+const userFunction = require('./userFunction')
 const express  = require('express');
 const bodyParser = require('body-parser')
 const app  = express();
 app.use(bodyParser.urlencoded({ extended: false }));
+
 
 let users = [
     {
@@ -12,7 +14,7 @@ let users = [
     name : 'Kum',
     pass : 'kum'}
 ]
-let accUser = users.length; //кол-во пользователей
+
 
 app.get('/num=*&num=*', (req, res) => {
     const result = calc.sum(req.path); 
@@ -26,6 +28,7 @@ app.post('/sum', (req, res) => {
     res.send(`вычисление суммы -> ${result}`);
 });
 
+
 //Post /registration регистрация  
 app.post('/registration', (req, res) => {
     users.push({
@@ -36,7 +39,7 @@ app.post('/registration', (req, res) => {
 
 //Post /login авторизация   
 app.post('/login', (req, res) => {
-    const result = (users.find(({name, pass}) => req.body.userName === name && req.body.userPass === pass)) ? 'успешная': 'не верная пара'; 
+    const result = userFunction.isTrueUser(req.body.userName, req.body.userPass, users);
     res.send(`авторизация ${result}`);
 });
 
