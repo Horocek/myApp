@@ -11,6 +11,10 @@ app.get('/num=*&num=*', (req, res) => {
     res.send(`<h1>вычисление суммы -> ${result}</h1>`);
 });
 
+app.get('/users', (req, res) => {
+    const result = userFunction.getAllUsers();
+    res.send(`<h1>список пользователей: <br>${result}</h1>`);
+});
 
 // Post /sum сложение двух чисел
 app.post('/sum', (req, res) => {
