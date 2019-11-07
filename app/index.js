@@ -11,11 +11,20 @@ app.get('/num=*&num=*', (req, res) => {
     res.send(`<h1>вычисление суммы -> ${result}</h1>`);
 });
 
+
 //get /users получение всех пользователей
 app.get('/users', (req, res) => {
     const result = userFunction.getAllUsers();
     res.send(`<h1>список пользователей: <br>${result}</h1>`);
 });
+
+
+//get /user/id получение пользователя по id
+app.get('/users/*', (req, res) => {
+    const result = userFunction.getUser(req.path);
+    res.send(`<h1>id = ${result[0]} <br> пользователь - ${result[1]}</h1>`);
+});
+
 
 // Post /sum сложение двух чисел
 app.post('/sum', (req, res) => {
@@ -26,9 +35,23 @@ app.post('/sum', (req, res) => {
 
 //Post /registration регистрация  
 app.post('/registration', (req, res) => {
-    result = userFunction.Creat(req.body.userName, req.body.userPass) == false ? `Пользователь ${req.body.userName} сущевствует` : 'Регистрация успешна'
+    result = userFunction.Creat(req.body.userName, req.body.userPass) == false ? `логин ${req.body.userName} занят` : 'Регистрация успешна'
     res.send(result);
 });
+
+
+//post /edit/* редактирование пользователя
+app.post('/edit/*', (req, res) => {
+    result = userFunction.edit(req.path, req.body.newName, req.body.oldPass, req.body.newPass);
+    res.send(result);
+})
+
+//post /del/* удаление пользователя
+app.post('/del/*', (req, res) => {
+    result = userFunction.del(req.path, req.body.userPass);
+    res.send(result);
+})
+
 
 //Post /login авторизация   
 app.post('/login', (req, res) => {
