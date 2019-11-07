@@ -22,6 +22,7 @@ const Creat = (userName, userPass) => {
     });
 }
 
+//возвращение всех пользователей
 const getAllUsers = () => users.map(({name}) => name).join('<br>');
     
 module.exports.isTrueUser = isTrueUser
