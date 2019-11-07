@@ -5,12 +5,13 @@ const bodyParser = require('body-parser')
 const app  = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
+//get /num=*&num=* сложение массива чисел
 app.get('/num=*&num=*', (req, res) => {
     const result = calc.sum(req.path); 
     res.send(`<h1>вычисление суммы -> ${result}</h1>`);
 });
 
+//get /users получение всех пользователей
 app.get('/users', (req, res) => {
     const result = userFunction.getAllUsers();
     res.send(`<h1>список пользователей: <br>${result}</h1>`);
