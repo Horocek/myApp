@@ -81,6 +81,7 @@ const del = (pathStr, Pass) => {
     return "пользователь удален";
 }
 
+//экспорт 
 module.exports.isTrueUser = isTrueUser
 module.exports.Creat = Creat
 module.exports.getAllUsers = getAllUsers
