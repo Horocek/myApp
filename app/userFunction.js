@@ -1,7 +1,7 @@
 // app/userFunction.js
 const users = [
     {
-    name : 'Haro',
+    name : 'Maxim',
     pass : '12345678',
     userId : 0,
     isActive : true},
@@ -11,13 +11,13 @@ const users = [
     userId : 1,
     isActive : false},
     {
-    name : 'loc',
+    name : 'Locards',
     pass : '222',
     userId : 2,
     isActive : true},
     {
     name : 'Viktor',
-    pass : '2223',
+    pass : '666',
     userId : 3,
     isActive : true}
 ]
