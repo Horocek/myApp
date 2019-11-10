@@ -1,9 +1,15 @@
-const calc = require('./calc')
-const userFunction = require('./userFunction')
+const calc = require('./calc');
+const userFunction = require('./userFunction');
 const express  = require('express');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 const app  = express();
 app.use(bodyParser.urlencoded({ extended: false }));
+
+
+//get welcome
+app.get('/', (req, res) => {
+    res.send('welcome!!!!!!!');
+});
 
 //get /num=*&num=* сложение массива чисел
 app.get('/num=*&num=*', (req, res) => {

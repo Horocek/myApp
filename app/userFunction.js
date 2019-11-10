@@ -1,30 +1,31 @@
 // app/userFunction.js
+const sha256 = require('sha256');
 const users = [
     {
-    name : 'Maxim',
-    pass : '12345678',
+    name : 'Ivan',
+    pass : '4dcc57b2e6ffd0c08a79b00e996e11ad93c4b4fe4b3e9cfc86f5b04829e12b3f',//123
     userId : 0,
     isActive : true},
     {
-    name : 'Kum',
-    pass : '123',
+    name : 'Maxim',
+    pass : 'd99cc3e655c87a6ff8b68e56fd76b8121bf11287e6210129320afc37b753ad78',//12345678
     userId : 1,
     isActive : false},
     {
-    name : 'Locards',
-    pass : '222',
+    name : 'Dino',
+    pass : '2783c028190796572f198626046a2e3284db05e2345e325c213661826974e8a8',//qwerty1
     userId : 2,
     isActive : true},
     {
     name : 'Viktor',
-    pass : '666',
+    pass : '4903c3246e530ea06a536962f652e74def6fc0919e541163477d64de9cf5f941',// 666
     userId : 3,
     isActive : true}
 ]
 
 //проверка подлнности пользователя
 const isTrueUser = (userName, userPass) => {
-    return (users.find(({name, pass}) => userName === name && userPass === pass)) ? true : false; 
+    return (users.find(({name, pass}) => userName === name && sha256(userPass + userName) === pass)) ? true : false; 
 }
 
 //регистрация нового уникального пользователя
@@ -32,10 +33,11 @@ const Creat = (userName, userPass) => {
     if (users.find(({name}) => userName === name)) return false;
     users.push({
         name : userName,
-        pass : userPass,
+        pass : sha256(userPass + userName),
         userId : users.length,
         isActive : true
     });
+    console.log(users);
 }
 
 //возвращение всех пользователей
@@ -59,11 +61,11 @@ const edit = (pathStr, userName, oldPass, newPass) => {
     if (isRealUser !== true) {
         return "нет такого пользователя";
     }
-    if (users[id].pass !== oldPass) {
+    if (sha256(oldPass + users[id].name) !== users[id].pass) {
         return "не верный пароль";
     }
         users[id].name = userName;
-        users[id].pass = newPass;
+        users[id].pass = sha256(newPass + userName);
         return "пользователь изменен";
 }
 
@@ -74,7 +76,7 @@ const del = (pathStr, Pass) => {
     if (isRealUser !== true) {
         return "нет такого пользователя";
     }
-    if (users[id].pass !== Pass) {
+    if (users[id].pass !== sha256(Pass + users[id].name) ){
         return "не верный пароль";
     }
     users[id].isActive = false;
