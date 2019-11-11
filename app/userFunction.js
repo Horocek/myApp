@@ -1,5 +1,5 @@
 // app/userFunction.js
-const sha256 = require('sha256');
+const hashCreate = require('sha256');
 const users = [
     {
     name : 'Ivan',
@@ -33,11 +33,10 @@ const Creat = (userName, userPass) => {
     if (users.find(({name}) => userName === name)) return false;
     users.push({
         name : userName,
-        pass : sha256(userPass + userName),
+        pass : hashCreate(userPass + userName),
         userId : users.length,
         isActive : true
     });
-    console.log(users);
 }
 
 //возвращение всех пользователей
@@ -61,11 +60,11 @@ const edit = (pathStr, userName, oldPass, newPass) => {
     if (isRealUser !== true) {
         return "нет такого пользователя";
     }
-    if (sha256(oldPass + users[id].name) !== users[id].pass) {
+    if (hashCreate(oldPass + users[id].name) !== users[id].pass) {
         return "не верный пароль";
     }
         users[id].name = userName;
-        users[id].pass = sha256(newPass + userName);
+        users[id].pass = hashCreate(newPass + userName);
         return "пользователь изменен";
 }
 
@@ -76,7 +75,7 @@ const del = (pathStr, Pass) => {
     if (isRealUser !== true) {
         return "нет такого пользователя";
     }
-    if (users[id].pass !== sha256(Pass + users[id].name) ){
+    if (users[id].pass !== hashCreate(Pass + users[id].name) ){
         return "не верный пароль";
     }
     users[id].isActive = false;
