@@ -22,6 +22,17 @@ const users = [
     userId : 3,
     isActive : true}
 ]
+const status = [{
+    success : false,
+    err : "нет такого пользователя"},
+    {
+    success : false,
+    err : "Не верный пароль"},
+    {
+    success : true,
+    err : "успешно"
+    }
+]
 
 //проверка подлнности пользователя
 const isTrueUser = (userName, userPass) => {
@@ -58,14 +69,14 @@ const edit = (pathStr, userName, oldPass, newPass) => {
     const id = pathStr.replace(/edit/g,'').substr(2);
     const isRealUser = users.find(({userId, isActive}) => (userId == id && isActive == true) )? true : false;
     if (isRealUser !== true) {
-        return "нет такого пользователя";
+        return status[0];
     }
     if (hashCreate(oldPass + users[id].name) !== users[id].pass) {
-        return "не верный пароль";
+        return status[1];
     }
         users[id].name = userName;
         users[id].pass = hashCreate(newPass + userName);
-        return "пользователь изменен";
+        return status[3];
 }
 
 //удаление пользователя
@@ -73,13 +84,13 @@ const del = (pathStr, Pass) => {
     const id = pathStr.replace(/del/g,'').substr(2);
     const isRealUser = users.find(({userId, isActive}) => (userId == id && isActive == true))? true : false;
     if (isRealUser !== true) {
-        return "нет такого пользователя";
+        return status[0];
     }
     if (users[id].pass !== hashCreate(Pass + users[id].name) ){
-        return "не верный пароль";
+        return status[1];
     }
     users[id].isActive = false;
-    return "пользователь удален";
+    return status[3];
 }
 
 //экспорт 
