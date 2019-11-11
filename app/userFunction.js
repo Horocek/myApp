@@ -1,102 +1,94 @@
 // app/userFunction.js
 const hashCreate = require('sha256');
+const status = require('./idMSG');
+
 const users = [
     {
-    name : 'Ivan',
-    pass : '4dcc57b2e6ffd0c08a79b00e996e11ad93c4b4fe4b3e9cfc86f5b04829e12b3f',//123
-    userId : 0,
-    isActive : true},
+        name: 'Ivan',
+        pass: '4dcc57b2e6ffd0c08a79b00e996e11ad93c4b4fe4b3e9cfc86f5b04829e12b3f',//123
+        userId: 0,
+        isActive: true
+    },
     {
-    name : 'Maxim',
-    pass : 'd99cc3e655c87a6ff8b68e56fd76b8121bf11287e6210129320afc37b753ad78',//12345678
-    userId : 1,
-    isActive : false},
+        name: 'Maxim',
+        pass: 'd99cc3e655c87a6ff8b68e56fd76b8121bf11287e6210129320afc37b753ad78',//12345678
+        userId: 1,
+        isActive: false
+    },
     {
-    name : 'Dino',
-    pass : '2783c028190796572f198626046a2e3284db05e2345e325c213661826974e8a8',//qwerty1
-    userId : 2,
-    isActive : true},
+        name: 'Dino',
+        pass: '2783c028190796572f198626046a2e3284db05e2345e325c213661826974e8a8',//qwerty1
+        userId: 2,
+        isActive: true
+    },
     {
-    name : 'Viktor',
-    pass : '4903c3246e530ea06a536962f652e74def6fc0919e541163477d64de9cf5f941',// 666
-    userId : 3,
-    isActive : true}
-]
-const status = [{
-    success : false,
-    err : "нет такого пользователя"},
-    {
-    success : false,
-    err : "Не верный пароль"},
-    {
-    success : true,
-    err : "успешно"
+        name: 'Viktor',
+        pass: '4903c3246e530ea06a536962f652e74def6fc0919e541163477d64de9cf5f941',// 666
+        userId: 3,
+        isActive: true
     }
 ]
-
 //проверка подлнности пользователя
 const isTrueUser = (userName, userPass) => {
-    return (users.find(({name, pass}) => userName === name && sha256(userPass + userName) === pass)) ? true : false; 
+    return (users.find(({ name, pass }) => userName === name && hashCreate(userPass + userName) === pass)) ?
+        status.id[status.DONE] :
+        status.id[status.WRONGPASS];
 }
 
 //регистрация нового уникального пользователя
 const Creat = (userName, userPass) => {
-    if (users.find(({name}) => userName === name)) return false;
+    if (users.find(({ name }) => userName === name)) return false;
     users.push({
-        name : userName,
-        pass : hashCreate(userPass + userName),
-        userId : users.length,
-        isActive : true
+        name: userName,
+        pass: hashCreate(userPass + userName),
+        userId: users.length,
+        isActive: true
     });
 }
 
 //возвращение всех пользователей
 const getAllUsers = () => {
     let result = '';
-    users.map(({name, isActive}) => {
-    if (name && isActive == true) result += `${name}<br>`});
+    users.map(({ name, isActive }) => {
+        if (name && isActive == true) result += `${name}<br>`
+    });
     return result;
-    }
-   
+}
+
 //возвращение одного пользователя по id
 const getUser = (pathStr) => {
-    const id = pathStr.replace(/users/g,'').substr(2);
-    return users.find(({userId, isActive}) => (userId == id && isActive == true)) ? [id, users[id].name] : [id, 'не найден'];
+    const id = pathStr.replace(/users/g, '').substr(2);
+    return users.find(({ userId, isActive }) => (userId == id && isActive == true)) ? [id, users[id].name] : [id, 'не найден'];
 }
 
 //редактирование пользователя
 const edit = (pathStr, userName, oldPass, newPass) => {
-    const id = pathStr.replace(/edit/g,'').substr(2);
-    const isRealUser = users.find(({userId, isActive}) => (userId == id && isActive == true) )? true : false;
+    const id = pathStr.replace(/edit/g, '').substr(2);
+    const isRealUser = users.find(({ userId, isActive }) => (userId == id && isActive == true)) ? true : false;
     if (isRealUser !== true) {
-        return status[0];
+        return status.id[status.NOUSER];
     }
     if (hashCreate(oldPass + users[id].name) !== users[id].pass) {
-        return status[1];
+        return status.id[status.WRONGPASS];
     }
-        users[id].name = userName;
-        users[id].pass = hashCreate(newPass + userName);
-        return status[2];
+    users[id].name = userName;
+    users[id].pass = hashCreate(newPass + userName);
+    return status.id[status.DONE];
 }
 
 //удаление пользователя
 const del = (pathStr, Pass) => {
-    const id = pathStr.replace(/del/g,'').substr(2);
-    const isRealUser = users.find(({userId, isActive}) => (userId == id && isActive == true))? true : false;
+    const id = pathStr.replace(/del/g, '').substr(2);
+    const isRealUser = users.find(({ userId, isActive }) => (userId == id && isActive == true)) ? true : false;
     if (isRealUser !== true) {
-        return status[0];
+        return status.id[status.NOUSER];
     }
-    if (users[id].pass !== hashCreate(Pass + users[id].name) ){
-        return status[1];
+    if (users[id].pass !== hashCreate(Pass + users[id].name)) {
+        return status.id[status.WRONGPASS];
     }
     users[id].isActive = false;
-    return status[2];
+    return status.id[status.DONE];
 }
 
 //экспорт 
-module.exports.isTrueUser = isTrueUser
-module.exports.Creat = Creat
-module.exports.getAllUsers = getAllUsers
-module.exports.getUser = getUser
-module.exports.edit = edit
-module.exports.del = del
+module.exports = { isTrueUser, Creat, getAllUsers, getUser, edit, del }

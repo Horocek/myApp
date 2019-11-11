@@ -1,8 +1,9 @@
 const calc = require('./calc');
 const userFunction = require('./userFunction');
-const express  = require('express');
+const express = require('express');
 const bodyParser = require('body-parser');
-const app  = express();
+const app = express();
+const status = require('./idMsg');
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
@@ -13,7 +14,7 @@ app.get('/', (req, res) => {
 
 //get /num=*&num=* сложение массива чисел
 app.get('/num=*&num=*', (req, res) => {
-    const result = calc.sum(req.path); 
+    const result = calc.sum(req.path);
     res.send(`<h1>вычисление суммы -> ${result}</h1>`);
 });
 
@@ -41,28 +42,26 @@ app.post('/sum', (req, res) => {
 
 //Post /registration регистрация  
 app.post('/registration', (req, res) => {
-    result = userFunction.Creat(req.body.userName, req.body.userPass) == false ? `логин ${req.body.userName} занят` : 'успех';
-    res.send(result);
+    res.send(userFunction.Creat(req.body.userName, req.body.userPass) == false ?
+        status.id[status.BUSY] :
+        status.id[status.DONE]);
 });
 
 
 //post /edit/* редактирование пользователя
 app.post('/edit/*', (req, res) => {
-    result = userFunction.edit(req.path, req.body.newName, req.body.oldPass, req.body.newPass);
-    res.send(result);
+    res.send(userFunction.edit(req.path, req.body.newName, req.body.oldPass, req.body.newPass));
 })
 
 //post /del/* удаление пользователя
 app.post('/del/*', (req, res) => {
-    result = userFunction.del(req.path, req.body.userPass);
-    res.send(result);
+    res.send(userFunction.del(req.path, req.body.userPass));
 })
 
 
 //Post /login авторизация   
 app.post('/login', (req, res) => {
-    const result = userFunction.isTrueUser(req.body.userName, req.body.userPass);
-    res.send(`авторизация ${result}`);
+    res.send(userFunction.isTrueUser(req.body.userName, req.body.userPass));
 });
 
 app.listen(3000, () => {
