@@ -1,8 +1,9 @@
 const calc = require('./calc');
 const userFunction = require('./userFunction');
-const express  = require('express');
+const express = require('express');
 const bodyParser = require('body-parser');
-const app  = express();
+const app = express();
+const status = require('./idMsg');
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
@@ -13,7 +14,7 @@ app.get('/', (req, res) => {
 
 //get /num=*&num=* сложение массива чисел
 app.get('/num=*&num=*', (req, res) => {
-    const result = calc.sum(req.path); 
+    const result = calc.sum(req.path);
     res.send(`<h1>вычисление суммы -> ${result}</h1>`);
 });
 
@@ -41,8 +42,9 @@ app.post('/sum', (req, res) => {
 
 //Post /registration регистрация  
 app.post('/registration', (req, res) => {
-    result = userFunction.Creat(req.body.userName, req.body.userPass) == false ? `логин ${req.body.userName} занят` : 'успех';
-    res.send(result);
+    res.send(userFunction.Creat(req.body.userName, req.body.userPass) == false ?
+        status.id[status.BUSY] :
+        status.id[status.DONE]);
 });
 
 
