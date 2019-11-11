@@ -76,7 +76,7 @@ const edit = (pathStr, userName, oldPass, newPass) => {
     }
         users[id].name = userName;
         users[id].pass = hashCreate(newPass + userName);
-        return status[3];
+        return status[2];
 }
 
 //удаление пользователя
@@ -90,7 +90,7 @@ const del = (pathStr, Pass) => {
         return status[1];
     }
     users[id].isActive = false;
-    return status[3];
+    return status[2];
 }
 
 //экспорт 

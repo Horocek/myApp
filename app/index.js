@@ -41,7 +41,7 @@ app.post('/sum', (req, res) => {
 
 //Post /registration регистрация  
 app.post('/registration', (req, res) => {
-    result = userFunction.Creat(req.body.userName, req.body.userPass) == false ? `логин ${req.body.userName} занят` : 'Регистрация успешна'
+    result = userFunction.Creat(req.body.userName, req.body.userPass) == false ? `логин ${req.body.userName} занят` : 'успех';
     res.send(result);
 });
 
