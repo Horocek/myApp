@@ -24,13 +24,13 @@ const users = [
 ]
 const status = [{
     success : false,
-    err : "нет такого пользователя"},
+    msg : "нет такого пользователя"},
     {
     success : false,
-    err : "Не верный пароль"},
+    msg : "Не верный пароль"},
     {
     success : true,
-    err : "успешно"
+    msg : "успешно"
     }
 ]
 
