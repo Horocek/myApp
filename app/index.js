@@ -48,21 +48,18 @@ app.post('/registration', (req, res) => {
 
 //post /edit/* редактирование пользователя
 app.post('/edit/*', (req, res) => {
-    result = userFunction.edit(req.path, req.body.newName, req.body.oldPass, req.body.newPass);
-    res.send(result);
+    res.send(userFunction.edit(req.path, req.body.newName, req.body.oldPass, req.body.newPass));
 })
 
 //post /del/* удаление пользователя
 app.post('/del/*', (req, res) => {
-    result = userFunction.del(req.path, req.body.userPass);
-    res.send(result);
+    res.send(userFunction.del(req.path, req.body.userPass));
 })
 
 
 //Post /login авторизация   
 app.post('/login', (req, res) => {
-    const result = userFunction.isTrueUser(req.body.userName, req.body.userPass);
-    res.send(`авторизация ${result}`);
+    res.send(userFunction.isTrueUser(req.body.userName, req.body.userPass));
 });
 
 app.listen(3000, () => {

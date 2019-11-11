@@ -36,7 +36,7 @@ const status = [{
 
 //проверка подлнности пользователя
 const isTrueUser = (userName, userPass) => {
-    return (users.find(({name, pass}) => userName === name && sha256(userPass + userName) === pass)) ? true : false; 
+    return (users.find(({name, pass}) => userName === name && hashCreate(userPass + userName) === pass)) ?  status[2]: status[1]; 
 }
 
 //регистрация нового уникального пользователя
