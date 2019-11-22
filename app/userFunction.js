@@ -15,6 +15,35 @@ const getConnect = async () => {
 
 const userAdded = "INSERT INTO user(id, name, passwordHash) VALUES(?, ?, ?)";
 
+<<<<<<< HEAD
+=======
+const users = [
+    {
+        name: 'Ivan',
+        pass: '4dcc57b2e6ffd0c08a79b00e996e11ad93c4b4fe4b3e9cfc86f5b04829e12b3f',// 123
+        userId: 0,
+        isActive: true
+    },
+    {
+        name: 'Maxim',
+        pass: 'd99cc3e655c87a6ff8b68e56fd76b8121bf11287e6210129320afc37b753ad78',// 12345678
+        userId: 1,
+        isActive: false
+    },
+    {
+        name: 'Dino',
+        pass: '2783c028190796572f198626046a2e3284db05e2345e325c213661826974e8a8',// qwerty1
+        userId: 2,
+        isActive: true
+    },
+    {
+        name: 'Viktor',
+        pass: '4903c3246e530ea06a536962f652e74def6fc0919e541163477d64de9cf5f941',// 666
+        userId: 3,
+        isActive: true
+    }
+]
+>>>>>>> 840f531b2cbc2120675a64bf2e799f9713db9451
 //проверка подлнности пользователя
 const isTrueUser = async (userName, userPass) => {
     const connection = await getConnect();
