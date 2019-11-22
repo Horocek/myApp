@@ -58,10 +58,10 @@ const getUser = async (pathStr) => {
     const connection = await getConnect();
     try {
         const [row, field] = await connection.query(`SELECT id, name, isActive,  FROM user WHERE id=${id}`);
-        if (row[0].isActive == 0) return 'нет такого пользователя';
+        if (row[0].isActive == 0) return 'Нет такого пользователя';
         result = `${row[0].id} | ${row[0].name}`;
     } catch (err) {
-        result = 'нет такого пользователя';
+        result = 'Нет такого пользователя';
     }
     return result;
 }
