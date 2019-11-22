@@ -4,7 +4,7 @@ const id = [{
 },
 {
     success: false,
-    msg: "Не верный пароль"
+    msg: "Не верный логин или пароль"
 },
 {
     success: true,

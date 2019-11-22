@@ -3,8 +3,9 @@ const userFunction = require('./userFunction');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const status = require('./idMsg');
+
 app.use(bodyParser.urlencoded({ extended: false }));
+
 
 
 //get welcome
@@ -20,16 +21,15 @@ app.get('/num=*&num=*', (req, res) => {
 
 
 //get /users получение всех пользователей
-app.get('/users', (req, res) => {
-    const result = userFunction.getAllUsers();
-    res.send(`<h1>список пользователей: <br>${result}</h1>`);
+app.get('/users', async (req, res) => {
+    const result = await userFunction.getAllUsers();
+    res.send(`список пользователей: <br>${result}`);
 });
 
 
 //get /user/id получение пользователя по id
-app.get('/users/*', (req, res) => {
-    const result = userFunction.getUser(req.path);
-    res.send(`<h1>id = ${result[0]} <br> пользователь - ${result[1]}</h1>`);
+app.get('/users/*', async (req, res) => {
+    res.send(await userFunction.getUser(req.path));
 });
 
 
@@ -41,16 +41,14 @@ app.post('/sum', (req, res) => {
 
 
 //Post /registration регистрация  
-app.post('/registration', (req, res) => {
-    res.send(userFunction.Creat(req.body.userName, req.body.userPass) == false ?
-        status.id[status.BUSY] :
-        status.id[status.DONE]);
+app.post('/registration', async (req, res) => {
+    res.send(await userFunction.Creat(req.body.userName, req.body.userPass));
 });
 
 
 //post /edit/* редактирование пользователя
-app.post('/edit/*', (req, res) => {
-    res.send(userFunction.edit(req.path, req.body.newName, req.body.oldPass, req.body.newPass));
+app.post('/edit/*', async (req, res) => {
+    res.send(await userFunction.edit(req.path, req.body.newName, req.body.oldPass, req.body.newPass));
 })
 
 //post /del/* удаление пользователя
@@ -60,8 +58,8 @@ app.post('/del/*', (req, res) => {
 
 
 //Post /login авторизация   
-app.post('/login', (req, res) => {
-    res.send(userFunction.isTrueUser(req.body.userName, req.body.userPass));
+app.post('/login', async (req, res) => {
+    res.send(await userFunction.isTrueUser(req.body.userName, req.body.userPass));
 });
 
 app.listen(3000, () => {
