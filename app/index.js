@@ -52,8 +52,8 @@ app.post('/edit/*', async (req, res) => {
 })
 
 //post /del/* удаление пользователя
-app.post('/del/*', (req, res) => {
-    res.send(userFunction.del(req.path, req.body.userPass));
+app.post('/del/*', async (req, res) => {
+    res.send(await userFunction.del(req.path, req.body.userPass));
 })
 
 

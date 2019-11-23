@@ -15,12 +15,16 @@ const getConnect = async () => {
 
 
 const userAdded = "INSERT INTO user(id, name, passwordHash) VALUES(?, ?, ?)";
+const selectUserById = "SELECT * FROM user WHERE id=?";
+const selectUserByName = "SELECT * FROM user WHERE name=?";
+//const userEdit = "UPDATE user SET name=?, passwordHash=? WHERE id=?";
+
 
 //проверка подлнности пользователя
 const isTrueUser = async (userName, userPass) => {
     const connection = await getConnect();
     try {
-        const [row, field] = await connection.query(`SELECT passwordHash FROM user WHERE name='${userName}'`);
+        const [row, field] = await connection.query(selectUserByName, userName);
         const pass = row[0].passwordHash;
         return (pass === hashCreate(userPass + userName)) ? status.id[status.DONE] : status.id[status.WRONGPASS];
     }
@@ -58,10 +62,11 @@ const getUser = async (pathStr) => {
     const id = pathStr.replace(/users/g, '').substr(2);
     const connection = await getConnect();
     try {
-        const [row, field] = await connection.query(`SELECT id, name, isActive,  FROM user WHERE id=${id}`);
+        const [row, field] = await connection.query(selectUserById, id);
         if (row[0].isActive == 0) return 'Нет такого пользователя';
         result = `${row[0].id} | ${row[0].name}`;
     } catch (err) {
+        console.log(err);
         result = 'Нет такого пользователя';
     }
     return result;
@@ -72,7 +77,7 @@ const edit = async (pathStr, userName, oldPass, newPass) => {
     const id = pathStr.replace(/edit/g, '').substr(2);
     const connection = await getConnect();
     try {
-        const [rows, fields] = await connection.query(`SELECT id, name, isActive, passwordHash FROM user WHERE id=${id}`);
+        const [rows, fields] = await connection.query(selectUserById, id);
         const isRealUser = rows[0].isActive == 1 ? true : false;
         if (isRealUser !== true) {
             return status.id[status.NOUSER];
@@ -83,22 +88,29 @@ const edit = async (pathStr, userName, oldPass, newPass) => {
         await connection.query(`UPDATE user SET name='${userName}', passwordHash='${hashCreate(newPass + userName)}' WHERE id=${id}`);
         return status.id[status.DONE];
     } catch (err) {
+        console.log(err);
         return status.id[status.NOUSER];
     }
 }
 
 //удаление пользователя
-const del = (pathStr, Pass) => {
+const del = async (pathStr, pass) => {
     const id = pathStr.replace(/del/g, '').substr(2);
-    const isRealUser = users.find(({ userId, isActive }) => (userId == id && isActive == true)) ? true : false;
-    if (isRealUser !== true) {
+    const connection = await getConnect();
+    try {
+        const [rows, fields] = await connection.query(selectUserById, id);
+        const isRealUser = rows[0].isActive == 1 ? true : false;
+        if (isRealUser !== true) {
+            return status.id[status.NOUSER];
+        }
+        if (hashCreate(pass + rows[0].name) !== rows[0].passwordHash) {
+            return status.id[status.WRONGPASS];
+        }
+        await connection.query(`UPDATE user SET isActive=0 WHERE id=${id}`);
+        return status.id[status.DONE];
+    } catch (err) {
         return status.id[status.NOUSER];
     }
-    if (users[id].pass !== hashCreate(Pass + users[id].name)) {
-        return status.id[status.WRONGPASS];
-    }
-    users[id].isActive = false;
-    return status.id[status.DONE];
 }
 
 //экспорт 
