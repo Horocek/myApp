@@ -1,6 +1,6 @@
 // app/userFunction.js
 const hashCreate = require('sha256');
-const status = require('./idMsg').default;
+const status = require('./idMsg');
 const mysql = require("mysql2/promise");
 
 const getConnect = async () => {
