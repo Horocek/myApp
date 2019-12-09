@@ -2,6 +2,7 @@
 const hashCreate = require('sha256');
 const status = require('./idMsg');
 const mysql = require("mysql2/promise");
+const auth = require('./auth');
 
 const getConnect = async () => {
     return await mysql.createConnection({
@@ -22,15 +23,9 @@ const selectUserByName = "SELECT * FROM user WHERE NAME=?";
 
 //проверка подлнности пользоваателя
 const isTrueUser = async (userName, userPass) => {
-    const connection = await getConnect();
-    try {
-        const [row, field] = await connection.query(selectUserByName, userName);
-        const pass = row[0].PASSWORDHASH;
-        return (pass === hashCreate(userPass + userName)) ? status.id[status.DONE] : status.id[status.WRONGPASS];
-    }
-    catch (err) {
-        return status.id[status.WRONGPASS];
-    }
+    const resultLogin = await auth.loginUser(userName, userPass);
+    const answer = status.answerConstructor(resultLogin);
+    return answer;
 
 }
 

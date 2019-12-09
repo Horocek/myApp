@@ -60,7 +60,19 @@ app.post('/del/*', async (req, res) => {
 
 //Post /login авторизация   
 app.post('/login', async (req, res) => {
-    res.send(await userFunction.isTrueUser(req.body.userName, req.body.userPass));
+    const answer = await userFunction.isTrueUser(req.body.userName, req.body.userPass);
+    res.send(answer);
+});
+
+app.post('/test', (req, res) => {
+    res.set({
+        'content-type': 'application/json',
+        'content-length': '100',
+        'Authorization': 'abc123'   
+     });
+     
+
+     res.send({"data" : "ебаный токен"});
 });
 
 app.listen(3000, () => {

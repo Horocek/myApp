@@ -21,5 +21,18 @@ const WRONGPASS = 1;
 const DONE = 2;
 const BUSY = 3;
 
-module.exports = { id, NOUSER, WRONGPASS, DONE, BUSY };
+const answerConstructor = (...arg) => {
+    const success = (arg[0] !== false) ? true : false;
+    const result = (success == true) ? {
+        success: success,
+        msg: arg[0]
+    } :
+        {
+            success: success,
+            msg: 'not authorized'
+        };
+    return result;
+}
+
+module.exports = { id, NOUSER, WRONGPASS, DONE, BUSY, answerConstructor };
 
