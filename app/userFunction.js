@@ -1,10 +1,13 @@
 // app/userFunction.js
 const hashCreate = require('sha256');
+
 const statusConstructor = require('./constructors').statusConstructor;
-const mysql = require("mysql2/promise");
+const userConstructor = require('./constructors').userConstructor;
+
 const authToken = require('./auth').authToken;
 const loginUser = require('./auth').loginUser;
 
+const mysql = require("mysql2/promise");
 const getConnect = async () => {
     return await mysql.createConnection({
         host: process.env.DB_HOST,
@@ -19,7 +22,7 @@ const getConnect = async () => {
 const userAdded = "INSERT INTO user(ID, NAME, PASSWORDHASH) VALUES(?, ?, ?)";
 const selectUserById = "SELECT * FROM user WHERE ID=?";
 const selectUserByName = "SELECT * FROM user WHERE NAME=?";
-//const userEdit = "UPDATE user SET name=?, passwordHash=? WHERE id=?";
+
 
 const editUserById = async (userId, newName, newPass) => {
     const connection = await getConnect();
@@ -57,10 +60,9 @@ const Creat = async (userName, userPass) => {
 
 //возвращение всех пользователей
 const getAllUsers = async () => {
-    let result = '';
     const connection = await getConnect();
     const [rows, fields] = await connection.query('SELECT ID, NAME, ISACTIVE FROM user');
-    rows.map(({ ID, NAME, ISACTIVE }) => (NAME && ISACTIVE == 1) ? result += `${ID} | ${NAME}<br>` : result += '');
+    const result = userConstructor(rows);
     return result;
 }
 
@@ -70,12 +72,10 @@ const getUser = async (pathStr) => {
     const connection = await getConnect();
     try {
         const [row, field] = await connection.query(selectUserById, id);
-        if (row[0].ISACTIVE == 0) return 'Нет такого пользователя';
-        result = `${row[0].ID} | ${row[0].NAME}`;
+        return userConstructor(row);
     } catch (err) {
-        result = 'Нет такого пользователя';
+        return statusConstructor(false, 'catch error');
     }
-    return result;
 }
 
 //редактирование пользователя

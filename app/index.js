@@ -1,8 +1,8 @@
-const calc = require('./calc');
 const userFunction = require('./userFunction');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+
 require('dotenv').config();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -14,30 +14,18 @@ app.get('/', (req, res) => {
     res.send('welcome!!!!!!!');
 });
 
-//get /num=*&num=* сложение массива чисел
-app.get('/num=*&num=*', (req, res) => {
-    const result = calc.sum(req.path);
-    res.send(`<h1>вычисление суммы -> ${result}</h1>`);
-});
-
 
 //get /users получение всех пользователей
 app.get('/users', async (req, res) => {
-    const result = await userFunction.getAllUsers();
-    res.send(`список пользователей: <br>${result}`);
+    const answer = await userFunction.getAllUsers();
+    res.send(answer);
 });
 
 
 //get /user/id получение пользователя по id
 app.get('/users/*', async (req, res) => {
-    res.send(await userFunction.getUser(req.path));
-});
-
-
-// Post /sum сложение двух чисел
-app.post('/sum', (req, res) => {
-    const result = +req.body.num1 + +req.body.num2;
-    res.send(`вычисление суммы -> ${result}`);
+    const answer = await userFunction.getUser(req.path);
+    res.send(answer);
 });
 
 
