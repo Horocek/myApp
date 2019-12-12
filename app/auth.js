@@ -11,7 +11,6 @@ const getConnect = async () => {
     });
 }
 
-const userAdded = "INSERT INTO user(ID, NAME, PASSWORDHASH) VALUES(?, ?, ?)";
 const selectUserById = "SELECT * FROM user WHERE ID=?";
 const selectUserByName = "SELECT * FROM user WHERE NAME=?";
 

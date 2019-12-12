@@ -1,8 +1,9 @@
 // app/userFunction.js
 const hashCreate = require('sha256');
-const status = require('./idMsg');
+const statusConstructor = require('./constructors').statusConstructor;
 const mysql = require("mysql2/promise");
-const auth = require('./auth');
+const authToken = require('./auth').authToken;
+const loginUser = require('./auth').loginUser;
 
 const getConnect = async () => {
     return await mysql.createConnection({
@@ -33,9 +34,9 @@ const delUserById = async userId => {
 
 //проверка подлнности пользоваателя
 const isTrueUser = async (userName, userPass) => {
-    const resultLogin = await auth.loginUser(userName, userPass);
+    const resultLogin = await loginUser(userName, userPass);
     const message = (resultLogin == false) ? 'not autorized' : resultLogin;
-    const answer = status.answerConstructor(resultLogin, message);
+    const answer = statusConstructor(resultLogin, message);
     return answer;
 
 }
@@ -48,9 +49,9 @@ const Creat = async (userName, userPass) => {
     const user = [lastId, userName, hashCreate(userPass + userName)];
     try {
         await connection.query(userAdded, user);
-        return status.answerConstructor(true, 'Successful registration');
+        return statusConstructor(true, 'Successful registration');
     } catch (err) {
-        return status.answerConstructor(false, 'Login busy');
+        return statusConstructor(false, 'Login busy');
     }
 }
 
@@ -80,26 +81,26 @@ const getUser = async (pathStr) => {
 //редактирование пользователя
 const edit = async (userId, newName, newPass, token) => {
     try {
-        if (!(await auth.authToken(token, userId))) {
-            return status.answerConstructor(false, 'Not autorized');
+        if (!(await authToken(token, userId))) {
+            return statusConstructor(false, 'Not autorized');
         }
         await editUserById(userId, newName, newPass);
-        return status.answerConstructor(true, 'User edited');
+        return statusConstructor(true, 'User edited');
     } catch (err) {
-        return status.answerConstructor(false, 'catch error');
+        return statusConstructor(false, 'catch error');
     }
 }
 
 //удаление пользователя
 const del = async (userId, token) => {
     try {
-        if (!(await auth.authToken(token, userId))) {
-            return status.answerConstructor(false, 'Not autorized');
+        if (!(await authToken(token, userId))) {
+            return statusConstructor(false, 'Not autorized');
         }
         await delUserById(userId);
-        return status.answerConstructor(true, 'User deleted');
+        return statusConstructor(true, 'User deleted');
     } catch (err) {
-        return status.answerConstructor(false, 'catch error');
+        return statusConstructor(false, 'catch error');
     }
 }
 

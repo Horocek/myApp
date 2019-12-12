@@ -1,4 +1,4 @@
-const answerConstructor = (status, message) => {
+const statusConstructor = (status, message) => {
     const success = (status !== false) ? true : false;
     const result = (success == true) ? {
         success: success,
@@ -11,5 +11,5 @@ const answerConstructor = (status, message) => {
     return result;
 }
 
-module.exports = { answerConstructor };
+module.exports = { statusConstructor };
 
