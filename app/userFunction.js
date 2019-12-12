@@ -1,41 +1,5 @@
 // app/userFunction.js
 const hashCreate = require('sha256');
-<<<<<<< HEAD
-const status = require('./idMSG');
-
-const users = [
-    {
-        name: 'Ivan',
-        pass: '4dcc57b2e6ffd0c08a79b00e996e11ad93c4b4fe4b3e9cfc86f5b04829e12b3f',// 123
-        userId: 0,
-        isActive: true
-    },
-    {
-        name: 'Maxim',
-        pass: 'd99cc3e655c87a6ff8b68e56fd76b8121bf11287e6210129320afc37b753ad78',// 12345678
-        userId: 1,
-        isActive: false
-    },
-    {
-        name: 'Dino',
-        pass: '2783c028190796572f198626046a2e3284db05e2345e325c213661826974e8a8',// qwerty1
-        userId: 2,
-        isActive: true
-    },
-    {
-        name: 'Viktor',
-        pass: '4903c3246e530ea06a536962f652e74def6fc0919e541163477d64de9cf5f941',// 666
-        userId: 3,
-        isActive: true
-    }
-]
-
-//проверка подлнности пользователя
-const isTrueUser = (userName, userPass) => {
-    return (users.find(({ name, pass }) => userName === name && hashCreate(userPass + userName) === pass)) ?
-        status.id[status.DONE] :
-        status.id[status.WRONGPASS];
-=======
 
 const statusConstructor = require('./constructors').statusConstructor;
 const userConstructor = require('./constructors').userConstructor;
@@ -78,7 +42,6 @@ const isTrueUser = async (userName, userPass) => {
     const answer = statusConstructor(resultLogin, message);
     return answer;
 
->>>>>>> dev
 }
 
 //регистрация нового уникального пользователя
