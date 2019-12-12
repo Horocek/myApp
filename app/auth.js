@@ -27,9 +27,20 @@ const loginUser = async (userName, userPass) => {
     }
 }
 
+const authToken = async (token, userId) => {
+    const connection = await getConnect();
+    try {
+        const [row, field] = await connection.query(selectUserById, userId);
+        const pass = row[0].PASSWORDHASH;
+        return (`Bearer ${pass}` == token) ? true : false;
+    } catch (err) {
+        return false;
+    }
+}
 
 
 
 
 
-module.exports = { loginUser };
+
+module.exports = { loginUser, authToken };

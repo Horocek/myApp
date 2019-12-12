@@ -20,11 +20,22 @@ const selectUserById = "SELECT * FROM user WHERE ID=?";
 const selectUserByName = "SELECT * FROM user WHERE NAME=?";
 //const userEdit = "UPDATE user SET name=?, passwordHash=? WHERE id=?";
 
+const editUserById = async (userId, newName, newPass) => {
+    const connection = await getConnect();
+    await connection.query(`UPDATE user SET NAME='${newName}', PASSWORDHASH='${hashCreate(newPass + newName)}' WHERE ID=${userId}`);
+}
+
+const delUserById = async userId => {
+    const connection = await getConnect();
+    await connection.query(`UPDATE user SET ISACTIVE=0 WHERE ID=${userId}`)
+
+}
 
 //проверка подлнности пользоваателя
 const isTrueUser = async (userName, userPass) => {
     const resultLogin = await auth.loginUser(userName, userPass);
-    const answer = status.answerConstructor(resultLogin);
+    const message = (resultLogin == false) ? 'not autorized' : resultLogin;
+    const answer = status.answerConstructor(resultLogin, message);
     return answer;
 
 }
@@ -37,9 +48,9 @@ const Creat = async (userName, userPass) => {
     const user = [lastId, userName, hashCreate(userPass + userName)];
     try {
         await connection.query(userAdded, user);
-        return status.id[status.DONE];
+        return status.answerConstructor(true, 'Successful registration');
     } catch (err) {
-        return status.id[status.BUSY];
+        return status.answerConstructor(false, 'Login busy');
     }
 }
 
@@ -48,7 +59,7 @@ const getAllUsers = async () => {
     let result = '';
     const connection = await getConnect();
     const [rows, fields] = await connection.query('SELECT ID, NAME, ISACTIVE FROM user');
-    rows.map(({ ID, NAME, ISACTIVE}) => (NAME && ISACTIVE == 1) ? result += `${ID} | ${NAME}<br>` : result += '');
+    rows.map(({ ID, NAME, ISACTIVE }) => (NAME && ISACTIVE == 1) ? result += `${ID} | ${NAME}<br>` : result += '');
     return result;
 }
 
@@ -67,42 +78,28 @@ const getUser = async (pathStr) => {
 }
 
 //редактирование пользователя
-const edit = async (pathStr, userName, oldPass, newPass) => {
-    const id = pathStr.replace(/edit/g, '').substr(2);
-    const connection = await getConnect();
+const edit = async (userId, newName, newPass, token) => {
     try {
-        const [rows, fields] = await connection.query(selectUserById, id);
-        const isRealUser = rows[0].ISACTIVE == 1 ? true : false;
-        if (isRealUser !== true) {
-            return status.id[status.NOUSER];
+        if (!(await auth.authToken(token, userId))) {
+            return status.answerConstructor(false, 'Not autorized');
         }
-        if (hashCreate(oldPass + rows[0].NAME) !== rows[0].PASSWORDHASH) {
-            return status.id[status.WRONGPASS];
-        }
-        await connection.query(`UPDATE user SET NAME='${userName}', PASSWORDHASH='${hashCreate(newPass + userName)}' WHERE ID=${id}`);
-        return status.id[status.DONE];
+        await editUserById(userId, newName, newPass);
+        return status.answerConstructor(true, 'User edited');
     } catch (err) {
-        return status.id[status.NOUSER];
+        return status.answerConstructor(false, 'catch error');
     }
 }
 
 //удаление пользователя
-const del = async (pathStr, pass) => {
-    const id = pathStr.replace(/del/g, '').substr(2);
-    const connection = await getConnect();
+const del = async (userId, token) => {
     try {
-        const [rows, fields] = await connection.query(selectUserById, id);
-        const isRealUser = rows[0].ISACTIVE == 1 ? true : false;
-        if (isRealUser !== true) {
-            return status.id[status.NOUSER];
+        if (!(await auth.authToken(token, userId))) {
+            return status.answerConstructor(false, 'Not autorized');
         }
-        if (hashCreate(pass + rows[0].NAME) !== rows[0].PASSWORDHASH) {
-            return status.id[status.WRONGPASS];
-        }
-        await connection.query(`UPDATE user SET ISACTIVE=0 WHERE ID=${id}`);
-        return status.id[status.DONE];
+        await delUserById(userId);
+        return status.answerConstructor(true, 'User deleted');
     } catch (err) {
-        return status.id[status.NOUSER];
+        return status.answerConstructor(false, 'catch error');
     }
 }
 

@@ -43,18 +43,23 @@ app.post('/sum', (req, res) => {
 
 //Post /registration регистрация  
 app.post('/registration', async (req, res) => {
-    res.send(await userFunction.Creat(req.body.userName, req.body.userPass));
+    const answer = await userFunction.Creat(req.body.userName, req.body.userPass);
+    res.send(answer);
 });
 
 
-//post /edit/* редактирование пользователя
-app.post('/edit/*', async (req, res) => {
-    res.send(await userFunction.edit(req.path, req.body.newName, req.body.oldPass, req.body.newPass));
+//post /edit редактирование пользователя
+app.post('/edit', async (req, res) => {
+    const token = req.header('Authorization');
+    const answer = await userFunction.edit(req.body.userId, req.body.newName, req.body.newPass, token);
+    res.send(answer);
 })
 
-//post /del/* удаление пользователя
-app.post('/del/*', async (req, res) => {
-    res.send(await userFunction.del(req.path, req.body.userPass));
+//post /del удаление пользователя
+app.post('/del', async (req, res) => {
+    const token = req.header('Authorization');
+    const answer = await userFunction.del(req.body.userId, token);
+    res.send(answer);
 })
 
 
@@ -62,17 +67,6 @@ app.post('/del/*', async (req, res) => {
 app.post('/login', async (req, res) => {
     const answer = await userFunction.isTrueUser(req.body.userName, req.body.userPass);
     res.send(answer);
-});
-
-app.post('/test', (req, res) => {
-    res.set({
-        'content-type': 'application/json',
-        'content-length': '100',
-        'Authorization': 'abc123'   
-     });
-     
-
-     res.send({"data" : "ебаный токен"});
 });
 
 app.listen(3000, () => {
