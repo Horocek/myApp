@@ -1,10 +1,12 @@
-const calc = require('./calc');
 const userFunction = require('./userFunction');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const status = require('./idMsg');
+
+require('dotenv').config();
+
 app.use(bodyParser.urlencoded({ extended: false }));
+
 
 
 //get welcome
@@ -12,56 +14,47 @@ app.get('/', (req, res) => {
     res.send('welcome!!!!!!!');
 });
 
-//get /num=*&num=* сложение массива чисел
-app.get('/num=*&num=*', (req, res) => {
-    const result = calc.sum(req.path);
-    res.send(`<h1>вычисление суммы -> ${result}</h1>`);
-});
-
 
 //get /users получение всех пользователей
-app.get('/users', (req, res) => {
-    const result = userFunction.getAllUsers();
-    res.send(`<h1>список пользователей: <br>${result}</h1>`);
+app.get('/users', async (req, res) => {
+    const answer = await userFunction.getAllUsers();
+    res.send(answer);
 });
 
 
 //get /user/id получение пользователя по id
-app.get('/users/*', (req, res) => {
-    const result = userFunction.getUser(req.path);
-    res.send(`<h1>id = ${result[0]} <br> пользователь - ${result[1]}</h1>`);
-});
-
-
-// Post /sum сложение двух чисел
-app.post('/sum', (req, res) => {
-    const result = +req.body.num1 + +req.body.num2;
-    res.send(`вычисление суммы -> ${result}`);
+app.get('/users/*', async (req, res) => {
+    const answer = await userFunction.getUser(req.path);
+    res.send(answer);
 });
 
 
 //Post /registration регистрация  
-app.post('/registration', (req, res) => {
-    res.send(userFunction.Creat(req.body.userName, req.body.userPass) == false ?
-        status.id[status.BUSY] :
-        status.id[status.DONE]);
+app.post('/registration', async (req, res) => {
+    const answer = await userFunction.Creat(req.body.userName, req.body.userPass);
+    res.send(answer);
 });
 
 
-//post /edit/* редактирование пользователя
-app.post('/edit/*', (req, res) => {
-    res.send(userFunction.edit(req.path, req.body.newName, req.body.oldPass, req.body.newPass));
+//post /edit редактирование пользователя
+app.post('/edit', async (req, res) => {
+    const token = req.header('Authorization');
+    const answer = await userFunction.edit(req.body.userId, req.body.newName, req.body.newPass, token);
+    res.send(answer);
 })
 
-//post /del/* удаление пользователя
-app.post('/del/*', (req, res) => {
-    res.send(userFunction.del(req.path, req.body.userPass));
+//post /del удаление пользователя
+app.post('/del', async (req, res) => {
+    const token = req.header('Authorization');
+    const answer = await userFunction.del(req.body.userId, token);
+    res.send(answer);
 })
 
 
 //Post /login авторизация   
-app.post('/login', (req, res) => {
-    res.send(userFunction.isTrueUser(req.body.userName, req.body.userPass));
+app.post('/login', async (req, res) => {
+    const answer = await userFunction.isTrueUser(req.body.userName, req.body.userPass);
+    res.send(answer);
 });
 
 app.listen(3000, () => {
