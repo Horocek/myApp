@@ -19,7 +19,7 @@ const getConnect = async () => {
 }
 
 
-const userAdded = "INSERT INTO user(ID, NAME, PASSWORDHASH) VALUES(?, ?, ?)";
+const userAdded = "INSERT INTO user(NAME, PASSWORDHASH) VALUES(?, ?)";
 const selectUserById = "SELECT * FROM user WHERE ID=?";
 const selectUserByName = "SELECT * FROM user WHERE NAME=?";
 
@@ -41,15 +41,12 @@ const isTrueUser = async (userName, userPass) => {
     const message = (resultLogin == false) ? 'not autorized' : resultLogin;
     const answer = statusConstructor(resultLogin, message);
     return answer;
-
 }
 
 //регистрация нового уникального пользователя
 const Creat = async (userName, userPass) => {
     const connection = await getConnect();
-    const [row, field] = await connection.query(`SELECT MAX(ID) as maxId FROM user`);
-    const lastId = row[0].maxId + 1;
-    const user = [lastId, userName, hashCreate(userPass + userName)];
+    const user = [userName, hashCreate(userPass + userName)];
     try {
         await connection.query(userAdded, user);
         return statusConstructor(true, 'Successful registration');
