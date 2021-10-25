@@ -38,8 +38,9 @@ const delUserById = async userId => {
 //проверка подлнности пользоваателя
 const isTrueUser = async (userName, userPass) => {
     const resultLogin = await loginUser(userName, userPass);
+    const success = (resultLogin != false) ? true : false;
     const message = (resultLogin == false) ? 'not autorized' : resultLogin;
-    const answer = statusConstructor(resultLogin, message);
+    const answer = statusConstructor(success, message);
     return answer;
 
 }
@@ -103,4 +104,11 @@ const del = async (userId, token) => {
 }
 
 //экспорт 
-module.exports = { isTrueUser, Creat, getAllUsers, getUser, edit, del }
+module.exports = {
+    isTrueUser,
+    Creat,
+    getAllUsers,
+    getUser,
+    edit,
+    del
+}

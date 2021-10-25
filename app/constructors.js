@@ -1,30 +1,32 @@
 const isEmpity = require('./utils').isEmpity;
 
 const statusConstructor = (status, message) => {
-    const success = (status !== false) ? true : false;
-    const result = (success == true) ? {
-        success: success,
+    return {
+        success: status,
         data: message
-    } :
-        {
-            success: success,
-            data: message
-        };
-    return result;
+    }
 }
 
 const userConstructor = (users) => {
-    const result = [{}];
-    let i = 0;
+    const result = [];
     if (!(isEmpity(users))) {
-        users.map(({ NAME, ISACTIVE }) => {
-            result[i] = { name: NAME, isActive: ISACTIVE }
-            i++;
+        users.map(({
+            ID,
+            NAME,
+            ISACTIVE
+        }) => {
+            result.push({
+                id: ID,
+                name: NAME,
+                isActive: ISACTIVE
+            });
         });
         return result;
     }
     return statusConstructor(false, 'Not a user');
 }
 
-module.exports = { statusConstructor, userConstructor };
-
+module.exports = {
+    statusConstructor,
+    userConstructor
+};
